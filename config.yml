@@ -1,0 +1,27 @@
+hosts:
+  - name: cloudflare
+    address: Cloudflare
+    deploy_dir: /opt/apps
+
+  - name: nginxproxymanager
+    address: NginxProxyManager
+    deploy_dir: /opt/apps
+
+repos:
+  - name: homelab-deployments
+    url: git@github.com:jancernik/homelab-deployments.git
+    trigger_mode: poll
+    poll_interval: 20s
+
+projects:
+  - name: cloudflare
+    repo: homelab-deployments
+    repo_subdir: cloudflare
+    targets:
+      - cloudflare
+
+  - name: nginxproxymanager
+    repo: homelab-deployments
+    repo_subdir: nginxproxymanager
+    targets:
+      - nginxproxymanager
