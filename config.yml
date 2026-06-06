@@ -1,10 +1,10 @@
 hosts:
   - name: cloudflare
-    address: Cloudflare
+    address: ${CLOUDFLARE_ADDRESS}
     deploy_dir: /opt/apps
 
   - name: nginxproxymanager
-    address: NginxProxyManager
+    address: ${NPM_ADDRESS}
     deploy_dir: /opt/apps
 
 repos:
