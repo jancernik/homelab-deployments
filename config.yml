@@ -10,8 +10,8 @@ hosts:
 repos:
   - name: homelab-deployments
     url: git@github.com:jancernik/homelab-deployments.git
-    trigger_mode: poll
-    poll_interval: 20s
+    trigger_mode: hybrid
+    poll_interval: 60s
 
 projects:
   - name: cloudflare
