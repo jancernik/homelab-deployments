@@ -3,6 +3,10 @@ hosts:
     address: ${CLOUDFLARE_ADDRESS}
     deploy_dir: /opt/apps
 
+  - name: pangolin
+    address: ${PANGOLIN_ADDRESS}
+    deploy_dir: /opt/apps
+
   - name: nginxproxymanager
     address: ${NPM_ADDRESS}
     deploy_dir: /opt/apps
@@ -19,6 +23,12 @@ projects:
     repo_subdir: cloudflare
     targets:
       - cloudflare
+
+  - name: pangolin
+    repo: cuasar-deployments
+    repo_subdir: pangolin
+    targets:
+      - pangolin
 
   - name: nginxproxymanager
     repo: homelab-deployments

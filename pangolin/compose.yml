@@ -1,0 +1,13 @@
+services:
+  newt:
+    container_name: newt
+    image: fosrl/newt
+    restart: unless-stopped
+    ports:
+      - 2112:2112
+    environment:
+      - PANGOLIN_ENDPOINT=${PANGOLIN_ENDPOINT?}
+      - NEWT_ID=${NEWT_ID?}
+      - NEWT_SECRET=${NEWT_SECRET?}
+      - NEWT_METRICS_PROMETHEUS_ENABLED=true
+      - NEWT_ADMIN_ADDR=:2112
