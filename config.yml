@@ -15,6 +15,14 @@ hosts:
     address: ${OPENWEBUI_ADDRESS}
     deploy_dir: /opt/apps
 
+  - name: atuin
+    address: ${ATUIN_ADDRESS}
+    deploy_dir: /opt/apps
+
+  - name: syncthing
+    address: ${SYNCTHING_ADDRESS}
+    deploy_dir: /opt/apps
+
 repos:
   - name: homelab-deployments
     url: git@github.com:jancernik/homelab-deployments.git
@@ -45,3 +53,15 @@ projects:
     repo_subdir: openwebui
     targets:
       - openwebui
+
+  - name: atuin
+    repo: homelab-deployments
+    repo_subdir: atuin
+    targets:
+      - atuin
+
+  - name: syncthing
+    repo: homelab-deployments
+    repo_subdir: syncthing
+    targets:
+      - syncthing
