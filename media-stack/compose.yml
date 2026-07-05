@@ -1,0 +1,246 @@
+x-common: &common
+  restart: unless-stopped
+  environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Buenos_Aires
+  dns:
+    - 1.1.1.1
+    - 1.0.0.1
+
+services:
+  prowlarr:
+    <<: *common
+    container_name: prowlarr
+    image: ghcr.io/hotio/prowlarr:latest
+    ports:
+      - 9696:9696
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/prowlarr:/config
+
+  profilarr:
+    <<: *common
+    container_name: profilarr
+    image: santiagosayshey/profilarr:latest
+    ports:
+      - 6868:6868
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/profilarr:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+
+  radarr:
+    <<: *common
+    container_name: radarr
+    image: ghcr.io/hotio/radarr:latest
+    ports:
+      - 7878:7878
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/radarr:/config
+      - /mnt/data:/data
+
+  sonarr:
+    <<: *common
+    container_name: sonarr
+    image: ghcr.io/hotio/sonarr:latest
+    ports:
+      - 8989:8989
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/sonarr:/config
+      - /mnt/data:/data
+
+  lidarr:
+    <<: *common
+    container_name: lidarr
+    image: ghcr.io/hotio/lidarr:latest
+    ports:
+      - 8686:8686
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/lidarr:/config
+      - /mnt/data:/data
+      - /mnt/data/usenet/music:/downloads
+
+  bazarr:
+    <<: *common
+    container_name: bazarr
+    image: ghcr.io/hotio/bazarr:latest
+    ports:
+      - 6767:6767
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/bazarr:/config
+      - /mnt/data/media:/data/media
+
+  tidarr:
+    <<: *common
+    image: cstaelen/tidarr
+    container_name: tidarr
+    ports:
+      - 8484:8484
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/tidarr:/shared
+      - /mnt/data/downloads/music:/music
+      - /mnt/data/usenet/music:/shared/nzb_downloads
+      - /mnt/data/usenet/music/.processing:/shared/.processing
+
+  navidrome:
+    <<: *common
+    container_name: navidrome
+    image: ghcr.io/navidrome/navidrome:latest
+    ports:
+      - 4533:4533
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/navidrome:/data
+      - /mnt/data/media/music:/music:ro
+    environment:
+      - ND_LASTFM_APIKEY=${ND_LASTFM_APIKEY}
+      - ND_LASTFM_SECRET=${ND_LASTFM_SECRET}
+
+  picard:
+    <<: *common
+    container_name: picard
+    image: aandree5/picard-web:latest
+    ports:
+      - 5000:5000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/picard:/picard-web
+      - /mnt/data/media/music:/music:rw
+      - /mnt/data/downloads/music:/downloads:rw
+
+  seerr:
+    <<: *common
+    container_name: seerr
+    image: ghcr.io/hotio/seerr
+    ports:
+      - 5055:5055
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/seerr:/config
+
+  byparr:
+    <<: *common
+    container_name: byparr
+    image: ghcr.io/thephaseless/byparr:main
+    ports:
+      - 8191:8191
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+
+  plex:
+    <<: *common
+    container_name: plex
+    image: ghcr.io/hotio/plex:latest
+    environment:
+      - PLEX_CLAIM_TOKEN=${PLEX_CLAIM_TOKEN}
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Buenos_Aires
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/plex:/config
+      - /mnt/data/media:/data/media:ro
+    ports:
+      - 32400:32400
+    group_add:
+      - 993
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+
+  jellyfin:
+    <<: *common
+    container_name: jellyfin
+    image: ghcr.io/hotio/jellyfin:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/jellyfin:/config
+      - /mnt/data/media:/data/media:ro
+    ports:
+      - 8096:8096
+    group_add:
+      - 993
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+
+  jellyplex-watched:
+    <<: *common
+    container_name: jellyplex-watched
+    image: ghcr.io/luigi311/jellyplex-watched:latest
+    environment:
+      - DRYRUN=False
+      - SLEEP_DURATION=600
+      - GENERATE_GUIDS=False
+      - GENERATE_LOCATIONS=True
+      - PLEX_BASEURL=http://plex:32400
+      - PLEX_TOKEN=${PLEX_TOKEN}
+      - JELLYFIN_BASEURL=http://jellyfin:8096
+      - JELLYFIN_TOKEN=${JELLYFIN_TOKEN}
+      - SYNC_FROM_PLEX_TO_JELLYFIN=True
+      - SYNC_FROM_JELLYFIN_TO_PLEX=True
+      - USER_MAPPING=${USER_MAPPING}
+      - LIBRARY_MAPPING=${LIBRARY_MAPPING}
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Buenos_Aires
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+
+  qbittorrent:
+    <<: *common
+    container_name: qbittorrent
+    image: ghcr.io/hotio/qbittorrent:latest
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    environment:
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Buenos_Aires
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/qbittorrent:/config
+      - /mnt/data:/data
+
+  qui:
+    <<: *common
+    container_name: qui
+    image: ghcr.io/autobrr/qui:latest
+    ports:
+      - 7476:7476
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/qui:/config
+
+  speedtest-tracker:
+    <<: *common
+    container_name: speedtest-tracker
+    image: lscr.io/linuxserver/speedtest-tracker:latest
+    ports:
+      - 8443:443
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/speedtest-tracker:/config
+    environment:
+      - APP_KEY=${SPEEDTEST_TRACKER_KEY}
+      - APP_URL=${SPEEDTEST_TRACKER_URL}
+      - DB_CONNECTION=sqlite
+      - SPEEDTEST_SCHEDULE=25 */2 * * *
+      - APP_TIMEZONE=America/Buenos_Aires
+      - PUID=1000
+      - PGID=1000
+
+networks:
+  default:
+    name: media-stack

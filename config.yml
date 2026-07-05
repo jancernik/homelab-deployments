@@ -31,6 +31,10 @@ hosts:
     address: ${FRIGATE_ADDRESS}
     deploy_dir: /opt/apps
 
+  - name: media-stack
+    address: ${MEDIA_STACK_ADDRESS}
+    deploy_dir: /opt/apps
+
 repos:
   - name: homelab-deployments
     url: git@github.com:jancernik/homelab-deployments.git
@@ -85,6 +89,12 @@ projects:
     repo_subdir: wyoming
     targets:
       - ai
+
+  - name: media-stack
+    repo: homelab-deployments
+    repo_subdir: media-stack
+    targets:
+      - media-stack
 
   - name: frigate
     repo: homelab-deployments
