@@ -35,6 +35,10 @@ hosts:
     address: ${MEDIA_STACK_ADDRESS}
     deploy_dir: /opt/apps
 
+  - name: jenkins
+    address: ${JENKINS_ADDRESS}
+    deploy_dir: /opt/apps
+
 repos:
   - name: homelab-deployments
     url: git@github.com:jancernik/homelab-deployments.git
@@ -103,3 +107,9 @@ projects:
       - frigate
     extra_files:
       - config.yml
+
+  - name: jenkins
+    repo: homelab-deployments
+    repo_subdir: jenkins
+    targets:
+      - jenkins
