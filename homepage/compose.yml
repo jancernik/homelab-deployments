@@ -10,6 +10,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./config:/app/config
-      - ./icons:/app/public/icons
+      - ./config:/app/config:ro
+      - ./icons:/app/public/icons:ro
+      - /srv/homepage/logs:/app/config/logs
     restart: unless-stopped
